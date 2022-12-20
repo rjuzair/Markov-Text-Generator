@@ -1,0 +1,94 @@
+
+ 
+********File Stats*********
+Total number of words are: 960390
+
+Total number of unique words are: 34710
+
+Frequency table for alphabetic letters are given below: 
+
+ e 480970
+
+ t 354107
+
+ o 332717
+
+ a 309408
+
+ i 268911
+
+ s 266424
+
+ n 260133
+
+ h 255742
+
+ r 251863
+
+ l 180723
+
+ d 158715
+
+ u 137354
+
+ m 117435
+
+ y 99484
+
+ w 96315
+
+ c 91697
+
+ f 86140
+
+ g 72858
+
+ b 64067
+
+ p 61506
+
+ v 40149
+
+ k 37823
+
+ x 5331
+
+ j 4905
+
+ q 3961
+
+ z 1842
+
+ è 32
+
+ æ 13
+
+ à 1
+
+
+Top 5 commonly used words and their 3 successors is given below:
+
+ the (30079 Occurances)
+ --king  755
+ --world  442
+ --duke  366
+
+ and (28358 Occurances)
+ --the  854
+ --i  791
+ --so  431
+
+ i (21743 Occurances)
+ --am  1956
+ --have  1707
+ --will  1624
+
+ to (20890 Occurances)
+ --the  1560
+ --be  1043
+ --my  507
+
+ of (18815 Occurances)
+ --the  1623
+ --my  760
+ --his  635
