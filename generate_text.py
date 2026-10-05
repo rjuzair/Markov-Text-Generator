@@ -1,75 +1,49 @@
-import text_stats
-import sys
-import random
+#!/usr/bin/env python3
+"""Generate text with a first-order Markov chain trained on a text file.
+
+Usage:
+    ./generate_text.py <input_file> <start_word> <max_words>
+
+Each next word is sampled in proportion to how often it follows the current
+word in the source text. Generation stops early if the chain reaches a word
+that is never followed by another word.
+"""
 import os
+import random
+import sys
+
+import text_stats
 
 
-#Check for chek_errors
-def check_errors():
+def generate(successors, start_word, max_words, rng=random):
+    """Return up to `max_words` generated words, starting from `start_word`."""
+    current = start_word.lower()
+    output = [current]
+    for _ in range(max_words):
+        following = successors.get(current)
+        if not following:
+            break
+        current = rng.choices(list(following), weights=list(following.values()), k=1)[0]
+        output.append(current)
+    return output
 
-    if len(sys.argv) != 4:
-        print("Insufficient input parameters")
-        exit(1)
 
-    elif os.path.isfile(sys.argv[1]):
-        print("\nFound the input file! \nPlease wait, generating text... \n\n\n")
+def main(argv):
+    if len(argv) != 4:
+        sys.exit(__doc__)
+    path, start_word, max_words = argv[1], argv[2], argv[3]
+    if not os.path.isfile(path):
+        sys.exit(f"File not found: {path}")
+    if not max_words.isdigit():
+        sys.exit("max_words must be a positive integer")
 
-    else:
-        print("\nThe file does not exists!")
-        exit(1)
+    words = text_stats.all_words(text_stats.read_lines(path))
+    successors = text_stats.successor_counts(words)
+    if start_word.lower() not in successors:
+        sys.exit(f"'{start_word}' does not appear in {path} (or is never followed by another word)")
 
-def successors(words, word):
+    print(" ".join(generate(successors, start_word, int(max_words))))
 
-    successor_words = dict()
-    for i in range(len(words)):
-        if word == words[i]:
-            if words[i+1] in successor_words:
-                successor_words[words[i+1]] += 1
-            else:
-                successor_words[words[i+1]] = 1
 
-    t_words = sum(list(successor_words.values()))
-    for key,value in successor_words.items():
-        successor_words[key] = round((value/t_words), 2)
-
-    return successor_words
-
-def text_gen(given_word, words, words_limit):
-
-    cur_word = given_word
-    msg = cur_word
-    successors_dict = {}
-    successor_words = successors(words, given_word)
-    successors_dict[given_word] = successor_words
-
-    for i in range(words_limit):
-
-        if cur_word in successors_dict:
-            successor_words = successors_dict[cur_word]
-        else:
-            successor_words = successors(words, cur_word)
-            successors_dict[cur_word] = successor_words
-
-        #generate new word
-        cur_word = random.choices(population = list(successor_words.keys()),
-         weights=list(successor_words.values()), k = 1)[0]
-        msg = msg + " " + cur_word
-
-    print(msg)
-
-def main():
-
-        with open(sys.argv[1], encoding="utf-8", mode="r") as input_file:
-
-            file_data = input_file.readlines()
-            words = text_stats.all_words(file_data)
-            given_word = sys.argv[2]
-            words_limit = int(sys.argv[3])
-            text_gen(given_word, words, words_limit)
-
-            return None
-
-if __name__ == '__main__':
-
-    check_errors()
-    main()
+if __name__ == "__main__":
+    main(sys.argv)
