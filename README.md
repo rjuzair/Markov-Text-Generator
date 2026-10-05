@@ -1,25 +1,47 @@
-## Markov Text Generator
+# Markov Chain Text Generator
 
-This a small program that doubles as a somewhat reusable module and a command-line
-script. It will read a text file and produce some simple statistics about the contents, along with data that can be
-used to create a crude Markov text generator. The main focus is on Python as a scripting language, program
-structure and naming, and the usage of proper data structures.
+A command-line tool that analyses a text corpus and generates new text with a **first-order Markov chain** — each next word is sampled in proportion to how often it follows the current word in the source. Trained here on the *Complete Works of William Shakespeare* (~960,000 words).
 
-### 1. text_stats.py 
+![Python](https://img.shields.io/badge/Python-3.8+-3776AB?logo=python&logoColor=white)
+![No dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)
 
-text_stats.py a command-line script which reads the file in home directory (in this case shakespeare.txt) and prints some basic information about its contents.
-It should be invoked from the shell/terminal by ./text_stats.py <filename> (so, for example ./text_stats.py shakespeare.txt ). On Windows, this might look like python text_stats.py <filename> 
+## Example
+```console
+$ ./generate_text.py shakespeare.txt king 60
+king northumberland he catesby o heaven and see the wound there was not often beat
+his nets first to death rather be a tongue shakes aloft far from my sir as thus
+prince i'll mourn in so the world's diameter as drink the tears duke of the noble…
+```
 
-![Screenshot 2022-12-20 171633](https://user-images.githubusercontent.com/73039575/208714391-0d60310d-1001-4df0-9566-faab5f166a78.png)
+## Usage
+No third-party packages are needed — only the Python standard library.
 
-![image](https://user-images.githubusercontent.com/73039575/208714640-05c97300-9fc3-40ae-b37e-09b5ec662d42.png)
+**Text statistics** — total and unique word counts, a letter-frequency table, and the five most common words with their three most frequent successors:
+```bash
+./text_stats.py shakespeare.txt                  # print to the terminal
+./text_stats.py shakespeare.txt sample_stats.txt # write to a file
+```
+See [`sample_stats.txt`](sample_stats.txt) for the full Shakespeare report.
 
+**Text generation** — `<file> <start word> <max words>`:
+```bash
+./generate_text.py shakespeare.txt king 500
+```
+On Windows use `python text_stats.py …` / `python generate_text.py …`.
 
-### 2. text_generator.py
+## How it works
+1. **Tokenise** — split lines into words, strip surrounding punctuation and lower-case them.
+2. **Build the transition table** — a single pass over consecutive word pairs produces `word → Counter(next words)`.
+3. **Generate** — starting from the given word, repeatedly sample the next word with `random.choices`, weighted by the transition counts, until the word limit is reached or the chain hits a word with no successors.
 
-Script generate_text.py which takes three arguments: a file name of a text file, a starting word and a maximum number of words. It then generates very least interesting-looking new text.
-It can be invoked from the sell/terminal by ./generate_text.py shakespeare.txt king 500 , ./generate_text.py nilsholgersson.txt akka 1500.
-  
-![image](https://user-images.githubusercontent.com/73039575/208715568-0a305bc4-1c2b-4159-9c1e-a943cea04afe.png)
+Building the table once makes every generation step a dictionary lookup instead of a scan of the whole corpus.
 
+## Tests
+```bash
+cd tests && PYTHONPATH=.. python -m pytest
+```
 
+## Ideas for extension
+- Higher-order chains (condition on the previous *n* words) for more coherent sentences.
+- Keep punctuation and capitalisation as tokens to produce sentence boundaries.
+- Seed option (`--seed`) for reproducible output.
