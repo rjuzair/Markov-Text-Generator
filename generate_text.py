@@ -2,7 +2,7 @@
 """Generate text with a first-order Markov chain trained on a text file.
 
 Usage:
-    ./generate_text.py <input_file> <start_word> <max_words>
+    ./generate_text.py <input_file> <start_word> <max_words> [--seed N]
 
 Each next word is sampled in proportion to how often it follows the current
 word in the source text. Generation stops early if the chain reaches a word
@@ -29,6 +29,10 @@ def generate(successors, start_word, max_words, rng=random):
 
 
 def main(argv):
+    seed = None
+    if len(argv) == 6 and argv[4] == "--seed" and argv[5].lstrip("-").isdigit():
+        seed = int(argv[5])
+        argv = argv[:4]
     if len(argv) != 4:
         sys.exit(__doc__)
     path, start_word, max_words = argv[1], argv[2], argv[3]
@@ -42,7 +46,8 @@ def main(argv):
     if start_word.lower() not in successors:
         sys.exit(f"'{start_word}' does not appear in {path} (or is never followed by another word)")
 
-    print(" ".join(generate(successors, start_word, int(max_words))))
+    rng = random.Random(seed)
+    print(" ".join(generate(successors, start_word, int(max_words), rng=rng)))
 
 
 if __name__ == "__main__":
