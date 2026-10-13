@@ -4,7 +4,7 @@ A command-line tool that analyses a text corpus and generates new text with a **
 
 ![Python](https://img.shields.io/badge/Python-3.8+-3776AB?logo=python&logoColor=white)
 ![No dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)
-[![tests](https://github.com/rjuzair/Markov-Text-Generator/actions/workflows/tests.yml/badge.svg)](https://github.com/rjuzair/Markov-Text-Generator/actions/workflows/tests.yml)
+[![tests](https://github.com/rjuzair/markov-chain-text-generator/actions/workflows/tests.yml/badge.svg)](https://github.com/rjuzair/markov-chain-text-generator/actions/workflows/tests.yml)
 
 ## Example
 ```console
