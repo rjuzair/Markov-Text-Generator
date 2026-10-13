@@ -36,3 +36,13 @@ def test_generate_follows_observed_transitions():
 def test_generate_stops_at_dead_end():
     successors = text_stats.successor_counts(["start", "end"])
     assert generate_text.generate(successors, "start", 10) == ["start", "end"]
+
+
+def test_seed_makes_output_reproducible(tmp_path, capsys):
+    corpus = tmp_path / "corpus.txt"
+    corpus.write_text("the cat sat on the mat and the dog sat on the cat\n" * 5)
+    args = ["generate_text.py", str(corpus), "the", "30", "--seed", "7"]
+    generate_text.main(args)
+    first = capsys.readouterr().out
+    generate_text.main(args)
+    assert capsys.readouterr().out == first

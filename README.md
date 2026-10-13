@@ -4,6 +4,7 @@ A command-line tool that analyses a text corpus and generates new text with a **
 
 ![Python](https://img.shields.io/badge/Python-3.8+-3776AB?logo=python&logoColor=white)
 ![No dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)
+[![tests](https://github.com/rjuzair/Markov-Text-Generator/actions/workflows/tests.yml/badge.svg)](https://github.com/rjuzair/Markov-Text-Generator/actions/workflows/tests.yml)
 
 ## Example
 ```console
@@ -26,6 +27,7 @@ See [`sample_stats.txt`](sample_stats.txt) for the full Shakespeare report.
 **Text generation** — `<file> <start word> <max words>`:
 ```bash
 ./generate_text.py shakespeare.txt king 500
+./generate_text.py shakespeare.txt king 500 --seed 42   # reproducible output
 ```
 On Windows use `python text_stats.py …` / `python generate_text.py …`.
 
@@ -38,10 +40,10 @@ Building the table once makes every generation step a dictionary lookup instead 
 
 ## Tests
 ```bash
-cd tests && PYTHONPATH=.. python -m pytest
+pip install pytest
+pytest
 ```
 
 ## Ideas for extension
 - Higher-order chains (condition on the previous *n* words) for more coherent sentences.
 - Keep punctuation and capitalisation as tokens to produce sentence boundaries.
-- Seed option (`--seed`) for reproducible output.
